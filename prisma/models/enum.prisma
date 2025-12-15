@@ -1,4 +1,4 @@
-enum DoctorSpeciality {
+enum DoctorSpecialty {
     CARDIOLOGY
     DERMATOLOGY
     NEUROLOGY

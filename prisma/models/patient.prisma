@@ -1,10 +1,9 @@
 model Patient {
     id       Int    @id @default(autoincrement())
     name     String
-    username String @unique
-    password String
-    phone    String @unique
     email    String @unique
+    phone    String @unique
+    password String
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
