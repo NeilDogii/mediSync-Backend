@@ -79,6 +79,30 @@ export class AuthService {
     return { token };
   }
 
+  async createDoctor(
+    body: Prisma.DoctorCreateInput,
+  ): Promise<Prisma.DoctorCreateInput | HttpException> {
+    if (!body.username || !body.password || !body.name || !body.specialty) {
+      throw new HttpException(
+        'All fields are required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const existingUser = await this.db.doctor.findFirst({
+      where: {
+        username: body.username,
+      },
+    });
+    if (existingUser) {
+      throw new HttpException('Username already in use', HttpStatus.CONFLICT);
+    }
+    const hashedPassword = await this.encryptUtil.encryptPayload(body.password);
+    const newDoctor = await this.db.doctor.create({
+      data: { ...body, password: hashedPassword },
+    });
+    return newDoctor;
+  }
+
   async loginDoctor(body: { username: string; password: string }) {
     if (!body || !body.username || !body.password) {
       throw new HttpException(
@@ -101,6 +125,30 @@ export class AuthService {
     } else {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  async createAdmin(
+    body: Prisma.AdminCreateInput,
+  ): Promise<Prisma.AdminCreateInput | HttpException> {
+    if (!body.username || !body.password) {
+      throw new HttpException(
+        'All fields are required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const existingUser = await this.db.admin.findFirst({
+      where: {
+        username: body.username,
+      },
+    });
+    if (existingUser) {
+      throw new HttpException('Username already in use', HttpStatus.CONFLICT);
+    }
+    const hashedPassword = await this.encryptUtil.encryptPayload(body.password);
+    const newAdmin = await this.db.admin.create({
+      data: { ...body, password: hashedPassword },
+    });
+    return newAdmin;
   }
 
   async loginAdmin(body: { username: string; password: string }) {

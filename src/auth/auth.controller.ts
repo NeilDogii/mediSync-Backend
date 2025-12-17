@@ -21,10 +21,28 @@ export class AuthController {
     return await this.authService.registerUser(body);
   }
 
+  @Post('/doctor/create')
+  @HttpCode(HttpStatus.CREATED)
+  async doctorCreate(
+    @Body()
+    body: Prisma.DoctorCreateInput,
+  ) {
+    return await this.authService.createDoctor(body);
+  }
+
   @Post('/doctor/login')
   @HttpCode(HttpStatus.OK)
   async doctorLogin(@Body() body: { username: string; password: string }) {
     return await this.authService.loginDoctor(body);
+  }
+
+  @Post('/admin/create')
+  @HttpCode(HttpStatus.CREATED)
+  async adminCreate(
+    @Body()
+    body: Prisma.AdminCreateInput,
+  ) {
+    return await this.authService.createAdmin(body);
   }
 
   @Post('/admin/login')
